@@ -58,7 +58,10 @@ namespace Chronicle.Managers
                     return;
                 }
 
-                await _processor.ProcessAsync(saga, message, state, context);
+                if (saga.State == SagaStates.Pending)
+                {
+                    await _processor.ProcessAsync(saga, message, state, context);
+                }
                 await _postProcessor.ProcessAsync(saga, message, context, onCompleted, onRejected);
             }
         }

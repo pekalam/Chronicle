@@ -31,10 +31,6 @@ namespace Chronicle.Managers
 
                 state = CreateSagaState(id, sagaType, dataType);
             }
-            else if (state.State is SagaStates.Rejected)
-            {
-                return (false, default);;
-            }
 
             InitializeSaga(saga, id, state);
 

@@ -23,7 +23,7 @@ namespace Chronicle.Managers
             {
                 case SagaStates.Rejected:
                     await onRejected(message, context);
-                    await CompensateAsync(saga, sagaType, context);
+                    await CompensateAsync(saga, sagaType, context, message);
                     break;
                 case SagaStates.Completed:
                     await onCompleted(message, context);
@@ -31,10 +31,18 @@ namespace Chronicle.Managers
             }
         }
         
-        private async Task CompensateAsync(ISaga saga, Type sagaType, ISagaContext context)
+        private async Task CompensateAsync(ISaga saga, Type sagaType, ISagaContext context, object processedMessage)
         {
             var sagaLogs = await _log.ReadAsync(saga.Id, sagaType);
-            foreach (var message in sagaLogs.OrderByDescending(l => l.CreatedAt).Select(l => l.Message))
+            var orderedSagaLogs =
+                sagaLogs.OrderByDescending(l => l.CreatedAt).Select(l => l.Message).ToList();
+            if (orderedSagaLogs.First().GetType() != processedMessage.GetType())
+            {
+                // in case when earlier message is received don't start compensations
+                // they should be called only by redelivering message that resulted in failure
+                return;
+            }
+            foreach (var message in orderedSagaLogs)
             {
                 await ((Task)saga.InvokeGeneric(nameof(ISagaAction<object>.CompensateAsync), message, context))
                     .ConfigureAwait(false);
