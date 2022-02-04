@@ -13,7 +13,7 @@ Fork of https://github.com/snatch-dev/Chronicle</Description>
       <PackageLicenseUrl>https://github.com/chronicle-stack/Chronicle/blob/master/LICENSE</PackageLicenseUrl>
       <PackageIconUrl>https://avatars1.githubusercontent.com/u/42150754?s=200</PackageIconUrl>
       <VersionPrefix>3.2.1</VersionPrefix>
-      <Version>3.3.1</Version>
+      <Version>3.3.2</Version>
       <AssemblyVersion>3.3.1.0</AssemblyVersion>
       <FileVersion>3.3.1.0</FileVersion>
       <LangVersion>latest</LangVersion>

@@ -49,13 +49,8 @@ namespace Chronicle.Managers
             state.Update(saga.State, updatedSagaData);
             var logData = SagaLogData.Create(saga.Id, sagaType, message);
 
-            var persistenceTasks = new []
-            {
-                _repository.WriteAsync(state),
-                _log.WriteAsync(logData)
-            };
-
-            await Task.WhenAll(persistenceTasks).ConfigureAwait(false);
+            await _repository.WriteAsync(state).ConfigureAwait(false);
+            await _log.WriteAsync(logData).ConfigureAwait(false);
         }
     }
 }
